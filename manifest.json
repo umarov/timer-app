@@ -1,5 +1,5 @@
 {
-  "name": "timer",
+  "name": "Timer",
   "short_name": "timer",
   "description": "A timer application",
   "start_url": "/timer-app",
