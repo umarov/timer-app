@@ -74,7 +74,7 @@ export class TimerApp extends LitElement {
     try {
       const { TimerWorker: workerClass } = await import('./timer-worker')
       const workerFile = new Blob(
-        [`;;(() => {${importComlink}${workerClass.toString()};Comlink.expose(TimerWorker, self);})()`],
+        [`(() => { ${importComlink} self['TimerWorker']=${workerClass.toString()};Comlink.expose(TimerWorker, self); })()`],
         { type: 'application/javascript' }
       )
 

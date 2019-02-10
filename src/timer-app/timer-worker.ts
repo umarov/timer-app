@@ -33,3 +33,6 @@ export class TimerWorker {
     clearInterval(this.intervalId)
   }
 }
+
+// @ts-ignore
+self['TimerWorker'] = TimerWorker

@@ -3,6 +3,7 @@
   "description": "A timer application",
   "scripts": {
     "watch": "webpack --config webpack.config.js --mode development --watch",
+    "build": "webpack --config webpack.config.js --mode development",
     "prod": "webpack --config webpack.config.js --mode production"
   },
   "dependencies": {
