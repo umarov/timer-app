@@ -1,4 +1,3 @@
-
 export class TimerWorker {
   private _counter: number;
   private _updateCallback = () => {}
