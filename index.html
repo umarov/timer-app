@@ -4,9 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
     <link rel="shortcut icon" href="favicon.ico">
-
-    <link href='//fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+    <link rel="preload" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" as="style">
+    <link href='//fonts.googleapis.com/css?family=Overpass+Mono:300,400,600,700|Material+Icons' rel="stylesheet" type="text/css">
 
     <title>timer</title>
     <meta name="description" content="A timer application">
@@ -16,11 +15,11 @@
 
     <style>
       :root {
-        font-family: 'Roboto', sans-serif;
+        font-family: 'Overpass Mono', monospace;
       }
     </style>
 
-    <script type="module" src="dist/timer-app/timer-app.js" crossorigin></script>
+    <script type="module" src="dist/timer-app/main.js"></script>
   </head>
   <body>
     <timer-app></timer-app>
