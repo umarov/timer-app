@@ -1,0 +1,7 @@
+{
+  "name": "timer",
+  "short_name": "timer",
+  "description": "A timer application",
+  "start_url": "/timer-app",
+  "display": "standalone"
+}
