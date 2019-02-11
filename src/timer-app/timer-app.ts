@@ -106,17 +106,15 @@ export class TimerApp extends LitElement {
       this.formattedValue = await this.timerWorker.formattedCounter
       await this.timerWorker.setUpdateCallback(
         proxyValue(() => {
-          if (document.visibilityState === 'visible') {
-            requestAnimationFrame(() => {
-              document.dispatchEvent(new CustomEvent('timer-value-updated'))
-            })
-          }
+          requestAnimationFrame(() => {
+            document.dispatchEvent(new CustomEvent('timer-value-updated'))
+          })
         })
       )
     }
 
     document.addEventListener('timer-value-updated', async () => {
-      if (this.timerWorker) {
+      if (this.timerWorker && document.visibilityState === 'visible') {
         this.formattedValue = await this.timerWorker.formattedCounter
       }
     })

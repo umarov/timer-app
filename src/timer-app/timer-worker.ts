@@ -27,20 +27,18 @@ export class TimerWorker {
 
   increment(delta = 1) {
     this._counter += delta
-
+    this.formatTimerValue(this._counter)
     this._updateCallback()
   }
 
-  setUpdateCallback(cb: () => void) {
-    this._updateCallback = cb
+  setUpdateCallback(callback: () => void) {
+    this._updateCallback = callback
   }
 
   startTimer() {
     this.stopTimer()
     this.intervalId = setInterval(() => {
-      this._counter++
-      this.formatTimerValue(this._counter)
-      this._updateCallback()
+      this.increment()
     }, 10)
   }
 
@@ -53,8 +51,6 @@ export class TimerWorker {
     this.seconds = this.getSeconds(value)
     this.minutes = this.getMinutes(value)
     this.hours = this.getHours(value)
-
-
   }
 
   getSeconds(value: number) {
@@ -73,9 +69,8 @@ export class TimerWorker {
     const minutes = value / 100 / 60
 
     if (minutes >= 1) {
-      const stringNumber = minutes.toString()
+      const stringNumber = (minutes % 60).toString()
       return stringNumber.split('.')[0]
-
     } else {
       return '0'
     }
@@ -87,7 +82,6 @@ export class TimerWorker {
     if (hours >= 1) {
       const stringNumber = hours.toString()
       return stringNumber.split('.')[0]
-
     } else {
       return '0'
     }
