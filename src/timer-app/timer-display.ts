@@ -33,7 +33,7 @@ export class TimerDisplay extends LitElement {
 
         .mdc-card {
           padding: 1rem;
-          width: 40vw;
+          width: 45vw;
           height: 130px;
           text-align: center;
           display: flex;
@@ -42,9 +42,9 @@ export class TimerDisplay extends LitElement {
       </style>
 
       <div class="timer-display">
-        <div class="mdc-card"><h1>${this.hours} hours</h1></div>
-        <div class="mdc-card"><h2>${this.minutes} minutes</h2></div>
-        <div class="mdc-card"><h3>${this.seconds} seconds</h3></div>
+        <div class="mdc-card"><p>${this.hours} hours</p></div>
+        <div class="mdc-card"><p>${this.minutes} minutes</p></div>
+        <div class="mdc-card"><p>${this.seconds} seconds</p></div>
         <div class="mdc-card"><p>${this.milliseconds} milliseconds</p></div>
       </div>
     `
