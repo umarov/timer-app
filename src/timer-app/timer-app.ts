@@ -1,12 +1,13 @@
 import { LitElement, html, customElement, property, css } from 'lit-element'
 
-import { proxy, proxyValue } from 'comlinkjs'
+import { proxyValue } from 'comlinkjs'
 
 import { TimerWorkerInterface } from './timer-worker-interface'
-const importComlink = 'importScripts("https://cdn.jsdelivr.net/npm/comlinkjs@3/umd/comlink.js");'
+import { createProxiedWorker } from './worker-helper'
 import(/* webpackChunkName: "timer-progress-bar" */ './timer-progress-bar')
 import(/* webpackChunkName: "timer-actions" */ './timer-actions')
 import(/* webpackChunkName: "timer-display" */ './timer-display')
+
 @customElement('timer-app')
 export class TimerApp extends LitElement {
   static styles = css`
@@ -27,9 +28,13 @@ export class TimerApp extends LitElement {
   @property({ type: Boolean })
   timerStarted = false
 
-
-  @property({ type: Number })
-  counter = 0
+  @property({ type: Object })
+  formattedValue = {
+    milliseconds: '0',
+    seconds: '0',
+    minutes: '0',
+    hours: '0'
+  }
 
   render() {
     return html`
@@ -39,7 +44,13 @@ export class TimerApp extends LitElement {
       />
 
       <div class="${this.componentReady ? '' : 'hidden'}">
-        <timer-display timerValue="${this.counter}"></timer-display>
+        <timer-display
+          hours="${this.formattedValue.hours}"
+          minutes="${this.formattedValue.minutes}"
+          seconds="${this.formattedValue.seconds}"
+          milliseconds="${this.formattedValue.milliseconds}"
+        >
+        </timer-display>
         <timer-progress-bar ?startProgress="${this.timerStarted}"></timer-progress-bar>
 
         <div>
@@ -47,7 +58,8 @@ export class TimerApp extends LitElement {
             @start="${this.startTimer}"
             @stop="${this.stopTimer}"
             ?started="${this.timerStarted}"
-            ?stopped="${!this.timerStarted}">
+            ?stopped="${!this.timerStarted}"
+          >
           </timer-actions>
         </div>
       </div>
@@ -57,31 +69,11 @@ export class TimerApp extends LitElement {
   async connectedCallback() {
     super.connectedCallback()
     try {
-      const { TimerWorker: workerClass } = await import(/* webpackChunkName: "timer-worker" */ './timer-worker')
-      const workerFile = new Blob(
-        [`(() => { ${importComlink} self['TimerWorker']=${workerClass.toString()};Comlink.expose(TimerWorker, self); })()`],
-        { type: 'application/javascript' }
-      )
-
-      const TimerWorker = (await proxy(
-        new Worker(URL.createObjectURL(workerFile))
-      )) as TimerWorkerInterface
+      const TimerWorker = await createProxiedWorker(import(/* webpackChunkName: "timer-worker" */'./timer-worker'), 'TimerWorker')
       // @ts-ignore
       this.timerWorker = await new TimerWorker()
-      if (this.timerWorker) {
-        this.counter = await this.timerWorker.counter
-        await this.timerWorker.setUpdateCallback(
-          proxyValue(() => {
-            document.dispatchEvent(new CustomEvent('value-updated'))
-          })
-        )
-      }
 
-      document.addEventListener('value-updated', async () => {
-        if (this.timerWorker) {
-          this.counter = await this.timerWorker.counter
-        }
-      })
+      await this.setupWorker()
     } catch (err) {
       console.error(err)
     }
@@ -92,6 +84,7 @@ export class TimerApp extends LitElement {
   disconnectedCallback() {
     this.stopTimer()
     this.timerWorker = undefined
+    super.disconnectedCallback()
   }
 
   async startTimer() {
@@ -106,5 +99,26 @@ export class TimerApp extends LitElement {
       await this.timerWorker.stopTimer()
       this.timerStarted = false
     }
+  }
+
+  private async setupWorker() {
+    if (this.timerWorker) {
+      this.formattedValue = await this.timerWorker.formattedCounter
+      await this.timerWorker.setUpdateCallback(
+        proxyValue(() => {
+          if (document.visibilityState === 'visible') {
+            requestAnimationFrame(() => {
+              document.dispatchEvent(new CustomEvent('timer-value-updated'))
+            })
+          }
+        })
+      )
+    }
+
+    document.addEventListener('timer-value-updated', async () => {
+      if (this.timerWorker) {
+        this.formattedValue = await this.timerWorker.formattedCounter
+      }
+    })
   }
 }

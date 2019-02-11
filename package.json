@@ -2,9 +2,9 @@
   "name": "timer",
   "description": "A timer application",
   "scripts": {
-    "watch": "webpack --config webpack.config.js --mode development --watch",
-    "build": "webpack --config webpack.config.js --mode development",
-    "prod": "webpack --config webpack.config.js --mode production"
+    "watch": "webpack --config webpack.config.js --watch",
+    "build": "webpack --config webpack.config.js",
+    "prod": "webpack --config webpack.prod.js"
   },
   "dependencies": {
     "comlinkjs": "^3.1.1",

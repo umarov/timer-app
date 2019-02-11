@@ -3,11 +3,7 @@ import { html } from 'lit-html'
 
 @customElement('timer-actions')
 export class TimerActions extends LitElement {
-  static styles = css`
-    :host {
-      margin-top: 16px;
-    }
-  `
+
 
   @property({ type: Boolean })
   started = false
@@ -21,6 +17,13 @@ export class TimerActions extends LitElement {
 
   render() {
     return html`
+      <style>
+        .timer-actions {
+          display: block;
+          margin-top: 16px;
+        }
+      </style>
+
       <div class="timer-actions">
         <button class="mdc-button" @click="${this.start}" ?disabled="${this.started}">
           <span class="mdc-button__label">Start</span>
